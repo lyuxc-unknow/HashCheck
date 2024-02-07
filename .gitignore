@@ -24,6 +24,4 @@ runs
 run-data
 
 repo
-libs/commons-codec-1.16.0.jar
-libs/commons-codec-1.16.0-javadoc.jar
-libs/commons-codec-1.16.0-sources.jar
+libs/*.jar
