@@ -1,0 +1,1 @@
+Please download the [codec](https://commons.apache.org/proper/commons-codec/download_codec.cgi) and put the jar file here
