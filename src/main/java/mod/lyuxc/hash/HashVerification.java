@@ -11,24 +11,30 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 @Mod("hash_check")
-public class TheMod {
+public class HashVerification {
     public static final Logger LOGGER = LogManager.getLogger("HashVerification");
     public static final Set<String> hash = new HashSet<>();
-    public static String hash256;
-    public TheMod(IEventBus modEventBus) {
+    public HashVerification(IEventBus modEventBus) {
         modEventBus.addListener(this::onSetupEvent);
     }
+    public static final String[] dirList = new String[] {
+            "mods",
+            "scripts",
+            "kubejs/client_scripts",
+            "kubejs/server_scripts",
+            "kubejs/startup_scripts"
+    };
     public void onSetupEvent(FMLCommonSetupEvent event) {
         try {
-            String v = FileUtils.readFromFile("hash.txt",true);
-            hash.addAll(Arrays.asList(v.split(System.lineSeparator())));
-            for(File file: Objects.requireNonNull(new File(System.getProperty("user.dir") + "/mods").listFiles())) {
-                if(file.getName().endsWith(".jar")) {
-                    hash256 = Base64.getEncoder().encodeToString(HashCalculation.getSHA256(file).getBytes());
-                    if(!hash.contains(hash256)) {
-                        System.exit(0);
-                    }
-                }
+            hash.addAll(
+                    List.of(
+                            FileUtils.readFromFile("hash.txt", true).split(System.lineSeparator())
+                    )
+            );
+
+            for(String dirPath : dirList) {
+                File directory = new File(System.getProperty("user.dir"), dirPath);
+                HashCalculationUtils.traverseDirectory(directory);
             }
         } catch (FileNotFoundException e) {
             FileUtils.writeToNewFile("hash.txt","",false);
